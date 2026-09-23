@@ -22,6 +22,7 @@ dev = [
 
 [project.scripts]
 nmath = "nmath.cli.main:main"
+nmath-server = "nmath.server.main:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
