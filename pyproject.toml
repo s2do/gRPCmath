@@ -10,11 +10,14 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "numpy>=2.0",
+    "grpcio",
+    "protobuf",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
+    "grpcio-tools",
 ]
 
 [project.scripts]
