@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package nmath.v1;
+
+// Used to verify that the client can reach the server.
+message PingRequest {
+    string message = 1;
+}
+
+// Returned by the server in response to Ping.
+message PingResponse {
+    string message = 1;
+}
+
+// Main mathematical service.
+service MathService {
+    rpc Ping(PingRequest) returns (PingResponse);
+}
