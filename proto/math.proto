@@ -2,17 +2,45 @@ syntax = "proto3";
 
 package nmath.v1;
 
-// Used to verify that the client can reach the server.
+// Ping messages
 message PingRequest {
     string message = 1;
 }
 
-// Returned by the server in response to Ping.
 message PingResponse {
     string message = 1;
 }
 
-// Main mathematical service.
+// Binary Operation enumerations
+enum Operator {
+    OPERATOR_UNSPECIFIED = 0;
+    OPERATOR_ADD = 1;
+    OPERATOR_SUB = 2;
+    OPERATOR_MUL = 3;
+    OPERATOR_DIV = 4;
+}
+
+enum OperationStatus {
+    STATUS_SUCCESS = 0;
+    STATUS_DIV_BY_ZERO = 1;
+    STATUS_NAN = 2;
+    STATUS_ERROR = 3;
+}
+
+// Binary Operation messages
+message BinaryOperationRequest {
+    double left_operand = 1;
+    double right_operand = 2;
+    Operator operator = 3;
+}
+
+message BinaryOperationResponse {
+    double result = 1;
+    OperationStatus status = 2;
+}
+
+// Main mathematical service
 service MathService {
     rpc Ping(PingRequest) returns (PingResponse);
+    rpc BinaryOperation(BinaryOperationRequest) returns (BinaryOperationResponse);
 }

@@ -2,12 +2,13 @@ from concurrent import futures
 
 import grpc
 
+from nmath.config import NMATH_HOST, NMATH_PORT
 from nmath.generated import math_pb2_grpc
 from nmath.server.service import MathService
 
 
-DEFAULT_HOST = "127.0.0.1"
-DEFAULT_PORT = 50051
+DEFAULT_HOST = NMATH_HOST
+DEFAULT_PORT = NMATH_PORT
 
 
 def create_server(
