@@ -1,13 +1,10 @@
 # nmath
 
-nmath is a Python-based mathematical execution engine with a gRPC interface.
+nmath is a Python-based mathematical execution engine with a gRPC interface and a Unix domain socket bridge.
 
 ## Current status
 
-Milestone M0 establishes the basic client/server architecture and verifies
-gRPC connectivity through a simple `Ping` operation.
-
-M0 does not yet provide mathematical execution functionality.
+Milestone M1 establishes the Unix domain socket bridge and implements the first mathematical execution functionality (`BinaryOperation`) backed by NumPy. 
 
 ## Requirements
 
@@ -26,33 +23,45 @@ Install the project and development dependencies:
 
     pip install -e ".[dev]"
 
+(Optional) Create a `.env` file in the project root to override default network configurations:
+
+    NMATH_SOCKET=/tmp/nmath.sock
+    NMATH_HOST=127.0.0.1
+    NMATH_PORT=50051
+
 ## Run the server
 
-Start the gRPC server:
+Start the gRPC backend server:
 
     nmath-server
 
-The server listens on:
+In a separate terminal, start the Unix socket bridge to handle client requests:
 
-    127.0.0.1:50051
+    nmath-bridge
 
-## Test connectivity
+## Usage & Expression Syntax
 
-In another terminal:
+The `nmath` CLI communicates with the bridge over a Unix domain socket. It accepts binary operations consisting of two numbers and one operator (`+`, `-`, `*`, `/`).
 
-    nmath ping
+You can pass the expression as a direct argument:
 
-Expected output:
+    nmath "3 + 2"
+    nmath "10.5 / 2"
+    nmath "-5 * 2.1"
 
-    pong: hello
+Alternatively, you can pipe expressions directly to the CLI via `stdin`:
 
-A custom message can be supplied:
+    echo "15 - 5" | nmath
 
-    nmath ping --message "hello nmath"
+Or pipe directly to the socket bypassing the Python CLI entirely using `nc` or `socat`:
+
+    echo "3+2" | nc -U /tmp/nmath.sock
+
+**Diagnostic Fallback:** If you pass an invalid expression (e.g., `nmath "hello"`), the bridge will fall back to a `Ping` request to verify if the gRPC backend is reachable.
 
 ## Testing
 
-Run the complete test suite:
+Run the complete test suite (Unit, Integration, E2E):
 
     pytest
 
@@ -66,9 +75,10 @@ The gRPC API is defined in:
 
     proto/math.proto
 
-M0 currently exposes:
+The API currently exposes:
 
     MathService.Ping(PingRequest) -> PingResponse
+    MathService.BinaryOperation(BinaryOperationRequest) -> BinaryOperationResponse
 
 ## Repository structure
 
@@ -80,8 +90,7 @@ M0 currently exposes:
 
 ## Development
 
-Protocol Buffer and gRPC Python files are generated from
-`proto/math.proto`.
+Protocol Buffer and gRPC Python files are generated from `proto/math.proto`.
 
 To regenerate them:
 

@@ -58,3 +58,30 @@ def test_binary_operation_invalid_operator():
     response = service.BinaryOperation(request, None)
 
     assert response.status == math_pb2.STATUS_ERROR
+
+def test_binary_operation_subtraction():
+    service = MathService()
+    request = math_pb2.BinaryOperationRequest(
+        left_operand=10.5,
+        right_operand=5.5,
+        operator=math_pb2.OPERATOR_SUB,
+    )
+    
+    response = service.BinaryOperation(request, None)
+    
+    assert response.status == math_pb2.STATUS_SUCCESS
+    assert response.result == 5.0
+
+
+def test_binary_operation_multiplication():
+    service = MathService()
+    request = math_pb2.BinaryOperationRequest(
+        left_operand=3.0,
+        right_operand=-4.0,
+        operator=math_pb2.OPERATOR_MUL,
+    )
+    
+    response = service.BinaryOperation(request, None)
+    
+    assert response.status == math_pb2.STATUS_SUCCESS
+    assert response.result == -12.0
