@@ -7,8 +7,9 @@ import grpc
 
 from nmath.client.service import MathClient
 from nmath.config import NMATH_SOCKET
+from nmath.config import NMATH_SOCKET, NMATH_SERVER_ADDRESS
 
-DEFAULT_SERVER = "127.0.0.1:50051"
+DEFAULT_SERVER = NMATH_SERVER_ADDRESS
 
 def handle_client(
     connection: socket.socket,
