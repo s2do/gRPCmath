@@ -24,17 +24,25 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nmath.proto\x12\x08nmath.v1\"\x1e\n\x0bPingRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x1f\n\x0cPingResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2D\n\x0bMathService\x12\x35\n\x04Ping\x12\x15.nmath.v1.PingRequest\x1a\x16.nmath.v1.PingResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nmath.proto\x12\x08nmath.v1\"\x1e\n\x0bPingRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x1f\n\x0cPingResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"k\n\x16\x42inaryOperationRequest\x12\x14\n\x0cleft_operand\x18\x01 \x01(\x01\x12\x15\n\rright_operand\x18\x02 \x01(\x01\x12$\n\x08operator\x18\x03 \x01(\x0e\x32\x12.nmath.v1.Operator\"T\n\x17\x42inaryOperationResponse\x12\x0e\n\x06result\x18\x01 \x01(\x01\x12)\n\x06status\x18\x02 \x01(\x0e\x32\x19.nmath.v1.OperationStatus*l\n\x08Operator\x12\x18\n\x14OPERATOR_UNSPECIFIED\x10\x00\x12\x10\n\x0cOPERATOR_ADD\x10\x01\x12\x10\n\x0cOPERATOR_SUB\x10\x02\x12\x10\n\x0cOPERATOR_MUL\x10\x03\x12\x10\n\x0cOPERATOR_DIV\x10\x04*_\n\x0fOperationStatus\x12\x12\n\x0eSTATUS_SUCCESS\x10\x00\x12\x16\n\x12STATUS_DIV_BY_ZERO\x10\x01\x12\x0e\n\nSTATUS_NAN\x10\x02\x12\x10\n\x0cSTATUS_ERROR\x10\x03\x32\x9c\x01\n\x0bMathService\x12\x35\n\x04Ping\x12\x15.nmath.v1.PingRequest\x1a\x16.nmath.v1.PingResponse\x12V\n\x0f\x42inaryOperation\x12 .nmath.v1.BinaryOperationRequest\x1a!.nmath.v1.BinaryOperationResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'math_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
+  _globals['_OPERATOR']._serialized_start=284
+  _globals['_OPERATOR']._serialized_end=392
+  _globals['_OPERATIONSTATUS']._serialized_start=394
+  _globals['_OPERATIONSTATUS']._serialized_end=489
   _globals['_PINGREQUEST']._serialized_start=24
   _globals['_PINGREQUEST']._serialized_end=54
   _globals['_PINGRESPONSE']._serialized_start=56
   _globals['_PINGRESPONSE']._serialized_end=87
-  _globals['_MATHSERVICE']._serialized_start=89
-  _globals['_MATHSERVICE']._serialized_end=157
+  _globals['_BINARYOPERATIONREQUEST']._serialized_start=89
+  _globals['_BINARYOPERATIONREQUEST']._serialized_end=196
+  _globals['_BINARYOPERATIONRESPONSE']._serialized_start=198
+  _globals['_BINARYOPERATIONRESPONSE']._serialized_end=282
+  _globals['_MATHSERVICE']._serialized_start=492
+  _globals['_MATHSERVICE']._serialized_end=648
 # @@protoc_insertion_point(module_scope)

@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 import socket
 import threading
 
@@ -26,14 +27,21 @@ def handle_client(
             connection.sendall(b"error: empty expression\n")
             return
 
-        # Temporary M1 plumbing.
-        #
-        # Replace this with:
-        #
-        # response = client.binary_operation(expression)
-        #
-        # once BinaryOperation exists in the gRPC API.
-        response = client.ping(expression)
+        # Regex to extract: (left number) (operator) (right number)
+        # Handles optional spaces and negative/decimal numbers
+        pattern = r"^\s*([-+]?\d*\.?\d+)\s*([+\-*/])\s*([-+]?\d*\.?\d+)\s*$"
+        match = re.match(pattern, expression)
+
+        if not match:
+            connection.sendall(b"error: invalid expression format\n")
+            return
+
+        left_op = float(match.group(1))
+        operator = match.group(2)
+        right_op = float(match.group(3))
+
+        # Perform the RPC calculation
+        response = client.binary_operation(left_op, right_op, operator)
 
         connection.sendall(
             f"{response}\n".encode("utf-8"),
