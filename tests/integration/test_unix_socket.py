@@ -10,6 +10,11 @@ class FakeMathClient:
     def ping(self, message: str) -> str:
         return f"pong: {message}"
 
+    def binary_operation(self, left: float, right: float, operator: str) -> str:
+        if operator == "+":
+            return f"{left + right:g}"
+        return "error: unknown"
+
     def close(self) -> None:
         pass
 
@@ -52,3 +57,28 @@ def test_unix_socket_ping(tmp_path):
         response = sock.recv(4096)
 
     assert response.decode().strip() == "pong: hello"
+
+def test_unix_socket_binary_operation(tmp_path):
+    socket_path = str(tmp_path / "nmath-test.sock")
+    client = FakeMathClient()
+
+    thread = threading.Thread(
+        target=serve,
+        kwargs={
+            "socket_path": socket_path,
+            "server_address": "unused",
+            "client": client,
+        },
+        daemon=True,
+    )
+    thread.start()
+
+    wait_for_socket(socket_path)
+
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
+        sock.connect(socket_path)
+        # Teste Regex-Parsing (inklusive Leerzeichen)
+        sock.sendall(b"  3.5   +  2 \n")
+        response = sock.recv(4096)
+
+    assert response.decode().strip() == "5.5"
