@@ -3,6 +3,7 @@ import os
 import re
 import socket
 import threading
+import grpc
 
 from nmath.client.service import MathClient
 from nmath.config import NMATH_SOCKET
@@ -34,8 +35,14 @@ def handle_client(
             try:
                 ping_response = client.ping(expression)
                 error_msg = f"error: unknown expression. Server is reachable ({ping_response})"
-            except Exception as ping_exc:
-                error_msg = f"error: unknown expression. Server is unreachable ({ping_exc})"
+            except grpc.RpcError as rpc_exc:
+                # Catch the specific 'server down' unavailability state
+                if rpc_exc.code() == grpc.StatusCode.UNAVAILABLE:
+                    error_msg = "error: unknown expression. (Note: The nmath bridge is running, but the backend gRPC server is offline)."
+                else:
+                    error_msg = f"error: unknown expression. (gRPC error: {rpc_exc.details()})"
+            except Exception as exc:
+                error_msg = f"error: unknown expression. (Unexpected error: {exc})"
             
             connection.sendall(f"{error_msg}\n".encode("utf-8"))
             return
