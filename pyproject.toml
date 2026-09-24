@@ -12,6 +12,7 @@ dependencies = [
     "numpy>=2.0",
     "grpcio",
     "protobuf",
+    "python-dotenv",
 ]
 
 [project.optional-dependencies]
@@ -23,6 +24,7 @@ dev = [
 [project.scripts]
 nmath = "nmath.cli.main:main"
 nmath-server = "nmath.server.main:main"
+nmath-bridge = "nmath.bridge.main:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

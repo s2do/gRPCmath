@@ -1,51 +1,72 @@
 import argparse
+import socket
+import sys
 
-from nmath.client.service import MathClient
-
-
-DEFAULT_SERVER = "127.0.0.1:50051"
+from nmath.config import NMATH_SOCKET
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="nmath",
-        description="nmath mathematical execution engine",
+        description="nmath mathematical expression client",
     )
 
-    subparsers = parser.add_subparsers(
-        dest="command",
-        required=True,
+    parser.add_argument(
+        "expression",
+        nargs="?",
+        help='mathematical expression, e.g. "1+2"',
     )
 
-    ping_parser = subparsers.add_parser(
-        "ping",
-        help="test connectivity to the nmath server",
-    )
-
-    ping_parser.add_argument(
-        "--message",
-        default="hello",
-        help="message sent to the server",
-    )
-
-    ping_parser.add_argument(
-        "--server",
-        default=DEFAULT_SERVER,
-        help=f"gRPC server address (default: {DEFAULT_SERVER})",
+    parser.add_argument(
+        "--socket",
+        default=NMATH_SOCKET,
+        help=(
+            f"Unix socket path "
+            f"(default: {NMATH_SOCKET})"
+        ),
     )
 
     return parser
 
 
-def main() -> None:
+def send_expression(
+    socket_path: str,
+    expression: str,
+) -> str:
+    with socket.socket(
+        socket.AF_UNIX,
+        socket.SOCK_STREAM,
+    ) as client_socket:
+        client_socket.connect(socket_path)
+
+        client_socket.sendall(
+            f"{expression}\n".encode("utf-8"),
+        )
+
+        response = client_socket.recv(4096)
+
+    return response.decode("utf-8").rstrip("\n")
+
+
+def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    if args.command == "ping":
-        client = MathClient(args.server)
+    expression = args.expression
 
-        try:
-            response = client.ping(args.message)
-            print(response)
-        finally:
-            client.close()
+    if expression is None:
+        expression = sys.stdin.read().strip()
+
+    if not expression:
+        parser.error("no expression supplied")
+
+    response = send_expression(
+        socket_path=args.socket,
+        expression=expression,
+    )
+
+    print(response)
+
+
+if __name__ == "__main__":
+    main()
