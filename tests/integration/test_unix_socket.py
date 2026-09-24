@@ -56,7 +56,7 @@ def test_unix_socket_ping(tmp_path):
 
         response = sock.recv(4096)
 
-    assert response.decode().strip() == "pong: hello"
+    assert response.decode().strip() == "error: unknown expression. Server is reachable (pong: hello)"
 
 def test_unix_socket_binary_operation(tmp_path):
     socket_path = str(tmp_path / "nmath-test.sock")

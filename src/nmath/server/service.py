@@ -1,3 +1,4 @@
+import numpy as np
 from nmath.generated import math_pb2, math_pb2_grpc
 
 
